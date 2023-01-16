@@ -16,14 +16,14 @@ import (
 
 func main() {
 	var (
-		host = flag.String("host", "0.0.0.0",
-			"IP address of the host to listen on, 0.0.0.0 by default")
+		listen = flag.String("listen", "0.0.0.0",
+			"IP address to listen on for TFTP requests (default: \"0.0.0.0\")")
 		port = flag.Int("port", 69,
-			"port to listen on for incoming connections, 69 by default")
-		baseUrl = flag.String("base-url", "",
-			"The URL base to proxied request")
+			"The port to listen on for TFTP requests (default: 69)")
+		baseUrl = flag.String("url", "",
+			"URL to forward TFTP requests to")
 		logLevel = flag.String("log-level", "info",
-			"The log level, use error,warning,info,debug. Info by defaul")
+			"Sets the default log level (default: \"info\")")
 	)
 	flag.Parse()
 
@@ -55,7 +55,7 @@ func main() {
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
 	tftpServer := tftp.NewServer(readHandler.Handler, nil)
-	addr := net.JoinHostPort(*host, strconv.Itoa(*port))
+	addr := net.JoinHostPort(*listen, strconv.Itoa(*port))
 	log.Infof("Starting TFTP server on %s", addr)
 
 	go func() {
